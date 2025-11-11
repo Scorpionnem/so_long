@@ -19,4 +19,7 @@
 
 char	*get_next_line(int fd, int *allocerror);
 
+char	**get_file(const char *path);
+int		get_line_count(const char *path);
+
 #endif

@@ -1,6 +1,6 @@
 NAME = libgnl.a
 
-SRCS = get_next_line.c get_next_line_utils.c get_next_line_internals.c
+SRCS = get_next_line.c get_next_line_utils.c get_next_line_internals.c get_line_count.c get_file.c
 
 OBJDIR = obj
 OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
