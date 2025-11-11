@@ -6,11 +6,16 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 10:21:59 by mbatty            #+#    #+#             */
-/*   Updated: 2025/11/11 10:35:54 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/11/11 13:56:32 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_internal.h"
+
+static void	print_error(const char *str)
+{
+	write(2, str, ft_strlengnl((char *)str));
+}
 
 static void	free_get_file(char **res, int fd)
 {
@@ -33,6 +38,7 @@ static int	fill_file(char **res, int fd)
 	line = get_next_line(fd, &alloc_error);
 	if (alloc_error)
 	{
+		print_error("gnl: alloc error\n");
 		free_get_file(res, fd);
 		return (0);
 	}
@@ -42,6 +48,7 @@ static int	fill_file(char **res, int fd)
 		line = get_next_line(fd, &alloc_error);
 		if (alloc_error)
 		{
+			print_error("gnl: alloc error\n");
 			free_get_file(res, fd);
 			return (0);
 		}
@@ -65,10 +72,14 @@ char	**get_file(const char *path)
 	i = 0;
 	res = ft_callocgnl((get_line_count(path) + 1), sizeof(char *));
 	if (!res)
+	{
+		print_error("gnl: alloc error\n");
 		return (NULL);
+	}
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 	{
+		print_error("gnl: failed to open file\n");
 		free(res);
 		return (NULL);
 	}

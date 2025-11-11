@@ -7,18 +7,23 @@ EXTERNALDIR = external
 MLXDIR = minilibx-linux
 GNLDIR = gnl
 OBJDIR = obj
+LIBFTDIR = libft
 
-INCLUDES = -I includes/ -I $(EXTERNALDIR)/$(MLXDIR)/ -I $(EXTERNALDIR)/$(GNLDIR)/
+INCLUDES = -I includes/ -I $(EXTERNALDIR)/$(MLXDIR)/ -I $(EXTERNALDIR)/$(GNLDIR)/ -I $(EXTERNALDIR)/$(LIBFTDIR)/
 
-SRCS =	src/main.c
+SRCS =	src/main.c \
+		src/parsing/parsing.c\
+		src/parsing/flood_fill.c\
+		src/parsing/parse_map.c\
 
 OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
 DEPS = $(SRCS:%.c=$(OBJDIR)/%.d)
 
 MLX = $(EXTERNALDIR)/$(MLXDIR)/libmlx.a
 GNL = $(EXTERNALDIR)/$(GNLDIR)/libgnl.a
+LIBFT = $(EXTERNALDIR)/$(LIBFTDIR)/libft.a
 
-all: minilibx $(MLX) $(GNL) $(NAME)
+all: minilibx $(MLX) $(GNL) $(LIBFT) $(NAME)
 
 run: all
 	./$(NAME)
@@ -34,9 +39,12 @@ $(MLX): $(EXTERNALDIR)
 $(GNL): $(EXTERNALDIR)
 	@make -C $(EXTERNALDIR)/$(GNLDIR) all
 
+$(LIBFT): $(EXTERNALDIR)
+	@make -C $(EXTERNALDIR)/$(LIBFTDIR) all
+
 $(NAME): $(OBJS)
 	@echo Compiling $(NAME)
-	@$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(MLX) $(GNL) -lXext -lX11 -lm -lz
+	@$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(MLX) $(GNL) $(LIBFT) -lXext -lX11 -lm -lz
 
 $(OBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
@@ -46,11 +54,13 @@ $(OBJDIR)/%.o: %.c
 clean:
 	@make -C $(EXTERNALDIR)/$(MLXDIR) clean
 	@make -C $(EXTERNALDIR)/$(GNLDIR) clean
+	@make -C $(EXTERNALDIR)/$(LIBFTDIR) clean
 	@echo Cleaning objects
 	@rm -rf $(OBJDIR)
 
 fclean: clean
 	@make -C $(EXTERNALDIR)/$(GNLDIR) fclean
+	@make -C $(EXTERNALDIR)/$(LIBFTDIR) fclean
 	@echo Cleaning $(NAME)
 	@rm -rf $(NAME)
 

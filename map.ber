@@ -1,0 +1,9 @@
+wall        1	texture
+floor       0	texture
+collectible C	texture
+exit        E	texture
+player      P	texture
+enemy       X	texture health attack
+11111
+1PCE1
+11111
