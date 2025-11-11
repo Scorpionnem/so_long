@@ -1,0 +1,68 @@
+NAME = so_long
+
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -MMD -MP -g
+
+EXTERNALDIR = external
+MLXDIR = minilibx-linux
+GNLDIR = gnl
+OBJDIR = obj
+
+INCLUDES = -I includes/ -I $(EXTERNALDIR)/$(MLXDIR)/
+
+SRCS =	src/main.c
+
+OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
+DEPS = $(SRCS:%.c=$(OBJDIR)/%.d)
+
+MLX = $(EXTERNALDIR)/$(MLXDIR)/libmlx.a
+GNL = $(EXTERNALDIR)/$(GNLDIR)/libgnl.a
+
+all: minilibx $(MLX) $(GNL) $(NAME)
+
+run: all
+	./$(NAME)
+
+re: fclean all
+
+$(EXTERNALDIR):
+	@mkdir -p $(EXTERNALDIR)
+
+$(MLX): $(EXTERNALDIR)
+	@make -C $(EXTERNALDIR)/$(MLXDIR) all
+
+$(GNL): $(EXTERNALDIR)
+	@make -C $(EXTERNALDIR)/$(GNLDIR) all
+
+$(NAME): $(OBJS)
+	@echo Compiling $(NAME)
+	@$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(MLX) $(GNL) -lXext -lX11 -lm -lz
+
+$(OBJDIR)/%.o: %.c
+	@mkdir -p $(dir $@)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+clean:
+	@make -C $(EXTERNALDIR)/$(MLXDIR) clean
+	@make -C $(EXTERNALDIR)/$(GNLDIR) clean
+	@echo Cleaning objects
+	@rm -rf $(OBJDIR)
+
+fclean: clean
+	@make -C $(EXTERNALDIR)/$(GNLDIR) fclean
+	@echo Cleaning $(NAME)
+	@rm -rf $(NAME)
+
+minilibx: $(EXTERNALDIR)
+	@if ls $(EXTERNALDIR) | grep -q "$(MLXDIR)"; then \
+		echo "\033[32;1;4mminilibx-linux Found\033[0m"; \
+	else \
+		echo "\033[31;1;4mminilibx-linux Not Found\033[0m"; \
+		echo "\033[31;1mDownloading minilibx-linux from github \033[0m"; \
+		git clone https://github.com/42paris/minilibx-linux.git $(EXTERNALDIR)/$(MLXDIR); \
+	fi
+
+.PHONY: all clean fclean run re
+
+-include $(DEPS)

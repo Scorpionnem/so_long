@@ -1,0 +1,8 @@
+connect4
+obj/
+*.o
+*.d
+*.a
+.vscode
+external/minilibx-linux
+so_long
