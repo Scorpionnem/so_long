@@ -10,7 +10,7 @@
 /*																			*/
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_internal.h"
 
 void	*alloc_error(int *error)
 {

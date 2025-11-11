@@ -8,7 +8,7 @@ MLXDIR = minilibx-linux
 GNLDIR = gnl
 OBJDIR = obj
 
-INCLUDES = -I includes/ -I $(EXTERNALDIR)/$(MLXDIR)/
+INCLUDES = -I includes/ -I $(EXTERNALDIR)/$(MLXDIR)/ -I $(EXTERNALDIR)/$(GNLDIR)/
 
 SRCS =	src/main.c
 

@@ -10,7 +10,7 @@
 /*																			*/
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_internal.h"
 
 int	size_to_nl(char	*str)
 {
