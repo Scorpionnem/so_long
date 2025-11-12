@@ -10,11 +10,13 @@ CFLAGS = -Wall -Werror -Wextra
 
 $(OBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
+	@echo Compiling $<
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
+	@echo Compiling $(NAME)
 	@ar rcs $(NAME) $(OBJS)
 
 clean:

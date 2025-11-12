@@ -34,13 +34,13 @@ $(EXTERNALDIR):
 	@mkdir -p $(EXTERNALDIR)
 
 $(MLX): $(EXTERNALDIR)
-	@make -C $(EXTERNALDIR)/$(MLXDIR) all
+	@make -C $(EXTERNALDIR)/$(MLXDIR) all --no-print-directory
 
 $(GNL): $(EXTERNALDIR)
-	@make -C $(EXTERNALDIR)/$(GNLDIR) all
+	@make -C $(EXTERNALDIR)/$(GNLDIR) all --no-print-directory
 
 $(LIBFT): $(EXTERNALDIR)
-	@make -C $(EXTERNALDIR)/$(LIBFTDIR) all
+	@make -C $(EXTERNALDIR)/$(LIBFTDIR) all --no-print-directory
 
 $(NAME): $(OBJS)
 	@echo Compiling $(NAME)
@@ -52,15 +52,15 @@ $(OBJDIR)/%.o: %.c
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	@make -C $(EXTERNALDIR)/$(MLXDIR) clean
-	@make -C $(EXTERNALDIR)/$(GNLDIR) clean
-	@make -C $(EXTERNALDIR)/$(LIBFTDIR) clean
+	@make -C $(EXTERNALDIR)/$(MLXDIR) clean --no-print-directory
+	@make -C $(EXTERNALDIR)/$(GNLDIR) clean --no-print-directory
+	@make -C $(EXTERNALDIR)/$(LIBFTDIR) clean --no-print-directory
 	@echo Cleaning objects
 	@rm -rf $(OBJDIR)
 
 fclean: clean
-	@make -C $(EXTERNALDIR)/$(GNLDIR) fclean
-	@make -C $(EXTERNALDIR)/$(LIBFTDIR) fclean
+	@make -C $(EXTERNALDIR)/$(GNLDIR) fclean --no-print-directory
+	@make -C $(EXTERNALDIR)/$(LIBFTDIR) fclean --no-print-directory
 	@echo Cleaning $(NAME)
 	@rm -rf $(NAME)
 

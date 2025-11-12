@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 08:48:50 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/28 04:14:56 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/11/12 09:28:27 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,6 @@ void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 void	free_2d(char **str);
+void	*ft_realloc(void *ptr, size_t ptr_size, size_t add_size);
 
 #endif

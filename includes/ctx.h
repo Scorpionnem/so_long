@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 10:12:21 by mbatty            #+#    #+#             */
-/*   Updated: 2025/11/11 14:44:49 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/11/12 09:13:52 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,24 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-typedef enum e_element_type
+typedef enum e_sprite_type
 {
-	FLOOR,
 	WALL,
-	EXIT,
+	FLOOR,
 	COLLECTIBLE,
+	ENEMY,
+	EXIT,
+	PLAYER,
 	UNKNOWN
-}	t_element_type;
+}	t_sprite_type;
+
+typedef struct s_sprite
+{
+	char			c;
+	t_sprite_type	type;
+
+	char			**args;
+}	t_sprite;
 
 typedef struct s_map
 {
