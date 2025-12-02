@@ -15,6 +15,7 @@ SRCS =	src/main.c \
 		src/parsing/parsing.c\
 		src/parsing/flood_fill.c\
 		src/parsing/parse_map.c\
+		src/mlx.c\
 
 OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
 DEPS = $(SRCS:%.c=$(OBJDIR)/%.d)

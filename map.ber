@@ -4,6 +4,12 @@ collectible C	texture
 exit        E	texture
 player      P	texture
 enemy       X	texture health attack
-11111
-1PCE1
-11111
+enemy       T	texture health attack
+11111111111
+1PCE0000001
+10000000001
+10000010001
+10011100001
+10000010001
+10010010001
+11111111111
