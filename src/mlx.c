@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 22:13:02 by mbatty            #+#    #+#             */
-/*   Updated: 2025/12/02 23:21:09 by mbatty           ###   ########.fr       */
+/*   Updated: 2026/02/12 13:46:48 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ void	set_hooks(t_ctx *ctx)
 {
 	mlx_hook(ctx->mlx_win, 17, 0, close_window, ctx);
 	mlx_loop_hook(ctx->mlx, loop_hook, ctx);
-	mlx_hook(ctx->mlx_win, 2, 1L << 0, key_hook, ctx); // KEY_PRESS
-	mlx_hook(ctx->mlx_win, 3, 1L << 1, key_hook_release, ctx); // KEY_RELEASE
+	mlx_hook(ctx->mlx_win, 2, 1L << 0, key_hook, ctx);
+	mlx_hook(ctx->mlx_win, 3, 1L << 1, key_hook_release, ctx);
 	// mlx_mouse_hook(ctx->mlx_win, mouse_hook, ctx);
 	mlx_loop(ctx->mlx);
 }

@@ -9,13 +9,17 @@ GNLDIR = gnl
 OBJDIR = obj
 LIBFTDIR = libft
 
-INCLUDES = -I includes/ -I $(EXTERNALDIR)/$(MLXDIR)/ -I $(EXTERNALDIR)/$(GNLDIR)/ -I $(EXTERNALDIR)/$(LIBFTDIR)/
+INCLUDES = -I inc/ -I $(EXTERNALDIR)/$(MLXDIR)/ -I $(EXTERNALDIR)/$(GNLDIR)/ -I $(EXTERNALDIR)/$(LIBFTDIR)/
 
 SRCS =	src/main.c \
 		src/parsing/parsing.c\
 		src/parsing/flood_fill.c\
 		src/parsing/parse_map.c\
+		src/hooks.c\
 		src/mlx.c\
+		src/entity.c\
+		src/ctx.c\
+		src/aabb.c\
 
 OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
 DEPS = $(SRCS:%.c=$(OBJDIR)/%.d)

@@ -6,78 +6,11 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 08:55:37 by mbatty            #+#    #+#             */
-/*   Updated: 2025/12/02 23:58:03 by mbatty           ###   ########.fr       */
+/*   Updated: 2026/02/12 14:48:09 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ctx.h"
-
-int	ctx_init(t_ctx *ctx, int ac, char **av)
-{
-	ft_bzero(ctx, sizeof(t_ctx));
-	if (ac != 2)
-	{
-		ft_putendl_fd("Invalid argument count", 2);
-		return (0);
-	}
-	ctx->file = get_file(av[1]);
-	if (!ctx->file)
-		return (0);
-	if (!parse_file(ctx))
-		return (0);
-	ctx->window_width = 640;
-	ctx->window_height = 512;
-	ctx->player_x = 1.5;
-	ctx->player_y = 1.5;
-	if (!init_mlx(ctx))
-		return (0);
-	return (1);
-}
-
-void	ctx_delete(t_ctx *ctx)
-{
-	int	i;
-
-	i = 0;
-	if (ctx->file)
-		free_2d(ctx->file);
-	if (ctx->map_infos.collectibles)
-		free(ctx->map_infos.collectibles);
-	if (ctx->map_infos.enemies)
-		free(ctx->map_infos.enemies);
-	if (ctx->map_infos.floors)
-		free(ctx->map_infos.floors);
-	if (ctx->map_infos.walls)
-		free(ctx->map_infos.walls);
-}
-
-int	key_hook(int keycode, t_ctx *ctx)
-{
-	if (keycode == ESC_KEY)
-		close_window(ctx);
-	if (keycode == 97) // A
-		ctx->left_input = true;
-	if (keycode == 100) // D
-		ctx->right_input = true;
-	if (keycode == 119) // W
-		ctx->up_input = true;
-	if (keycode == 115) // S
-		ctx->down_input = true;
-	return (1);
-}
-
-int	key_hook_release(int keycode, t_ctx *ctx)
-{
-	if (keycode == 97) // A
-		ctx->left_input = false;
-	if (keycode == 100) // D
-		ctx->right_input = false;
-	if (keycode == 119) // W
-		ctx->up_input = false;
-	if (keycode == 115) // S
-		ctx->down_input = false;
-	return (1);
-}
 
 float	distance(float x1, float y1, float x2, float y2)
 {
@@ -95,7 +28,7 @@ void	put_pixel(t_ctx *ctx, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void	fill_image(t_ctx *ctx, int color)
+void	clear_screen(t_ctx *ctx)
 {
 	int	x;
 	int	y;
@@ -106,7 +39,7 @@ void	fill_image(t_ctx *ctx, int color)
 		x = 0;
 		while (x < ctx->img.width)
 		{
-			put_pixel(ctx, x, y, color);
+			put_pixel(ctx, x, y, 0x00000000);
 			x++;
 		}
 		y++;
@@ -135,7 +68,7 @@ int	put_square(t_ctx *ctx, int x, int y, int size, int color)
 # define CAMERA_SIZE_X 5
 # define CAMERA_SIZE_Y 4
 
-int	render_map(t_ctx *ctx)
+int	render(t_ctx *ctx)
 {
 	int	x;
 	int	y;
@@ -143,40 +76,46 @@ int	render_map(t_ctx *ctx)
 	int	cam_x;
 	int	cam_y;
 
-	cam_x = floor(ctx->player_x);
-	cam_y = floor(ctx->player_y);
+	cam_x = floor(ctx->player.pos.x);
+	cam_y = floor(ctx->player.pos.y);
 	int x_min = cam_x - CAMERA_SIZE_X;
 	int y_min = cam_y - CAMERA_SIZE_Y;
 	int x_max = cam_x + CAMERA_SIZE_X;
 	int y_max = cam_y + CAMERA_SIZE_Y;
+	float	relative_x;
+	float	relative_y;
+	int		pos_x;
+	int		pos_y;
 
 	y = y_min;
 	while (y <= y_max + 1)
 	{
 		x = x_min;
 		while (x <= x_max + 1)
-		{
-				float	relative_x;
-				float	relative_y;
-				int		pos_x;
-				int		pos_y;
-					
-				relative_x = (float)x - ctx->player_x;
-				relative_y = (float)y - ctx->player_y;
-				pos_x = (int)((relative_x + CAMERA_SIZE_X) * 64);
-				pos_y = (int)((relative_y + CAMERA_SIZE_Y) * 64);
+		{	
+			relative_x = (float)x - ctx->player.pos.x;
+			relative_y = (float)y - ctx->player.pos.y;
+			pos_x = (int)((relative_x + CAMERA_SIZE_X) * TILE_SIZE);
+			pos_y = (int)((relative_y + CAMERA_SIZE_Y) * TILE_SIZE);
 
 			if (x >= 0 && y >= 0 && x < ctx->map_infos.width && y < ctx->map_infos.height)
 			{
 				if (ft_strchr(ctx->map_infos.walls, ctx->map[y][x])) // WALLS
-					put_square(ctx, pos_x, pos_y, 64, 0x000000FF);
+					put_square(ctx, pos_x, pos_y, TILE_SIZE, 0x000000FF);
 				if (ft_strchr(ctx->map_infos.floors, ctx->map[y][x])) // WALLS
-					put_square(ctx, pos_x, pos_y, 64, 0x00000055);
+					put_square(ctx, pos_x, pos_y, TILE_SIZE, 0x00000055);
 			}
 			x++;
 		}
 		y++;
 	}
+	relative_x = (float)3 - ctx->player.pos.x;
+	relative_y = (float)3 - ctx->player.pos.y;
+	pos_x = (int)((relative_x + CAMERA_SIZE_X) * TILE_SIZE);
+	pos_y = (int)((relative_y + CAMERA_SIZE_Y) * TILE_SIZE);
+
+	put_square(ctx, (ctx->window_width / 2) - 24, (ctx->window_height / 2) - 24, 48, 0x0000FFAA);
+	put_square(ctx, pos_x, pos_y, TILE_SIZE, 0x0000FFAA);
 	return (1);
 }
 
@@ -185,27 +124,75 @@ bool	is_in_bounds(t_ctx *ctx, float x, float y)
 	return (x >= 0 && y >= 0 && x < ctx->map_infos.width && y < ctx->map_infos.height);
 }
 
+void	update_delta(t_ctx *ctx)
+{
+	double	current_frame;
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	current_frame = tv.tv_sec + tv.tv_usec * 1e-6;
+	ctx->delta = current_frame - ctx->last_frame;
+	ctx->last_frame = current_frame;
+}
+
+#define MOVE_SPEED 3.0
+
+void	start_shake(t_ctx *ctx, float duration, float speed, float force)
+{
+	ctx->shake.active = true;
+	ctx->shake.timer = 0;
+	ctx->shake.duration = duration;
+	ctx->shake.speed = speed;
+	ctx->shake.force = force;
+}
+
+void	update_shake(t_ctx *ctx)
+{
+	if (!ctx->shake.active)
+	{
+		ctx->shake.x = 0;
+		ctx->shake.y = 0;
+		ctx->shake.timer = 0;
+		return ;
+	}
+	ctx->shake.timer += ctx->delta;
+	if (ctx->shake.timer >= ctx->shake.duration)
+		ctx->shake.active = false;
+	ctx->shake.x = sin(ctx->shake.timer * ctx->shake.speed) * ctx->shake.force;
+	ctx->shake.y = cos(ctx->shake.timer * ctx->shake.speed) * ctx->shake.force;
+}
+
+void	update_input(t_ctx *ctx)
+{
+	ctx->player.delta.x = 0;
+	ctx->player.delta.y = 0;
+	if (ctx->up_input)
+		ctx->player.delta.y = -MOVE_SPEED;
+	if (ctx->down_input)
+		ctx->player.delta.y = MOVE_SPEED;
+	if (ctx->left_input)
+		ctx->player.delta.x = -MOVE_SPEED;
+	if (ctx->right_input)
+		ctx->player.delta.x = MOVE_SPEED;
+}
+
 int	update(t_ctx *ctx)
 {
-	if (ctx->up_input && is_in_bounds(ctx, ctx->player_x, (ctx->player_y - 0.5) - 0.01) && ctx->map[(int)((ctx->player_y - 0.5) - 0.01)][(int)ctx->player_x] != '1')
-		ctx->player_y -= 0.01;
-	if (ctx->down_input && is_in_bounds(ctx, ctx->player_x, (ctx->player_y + 0.5) + 0.01) && ctx->map[(int)((ctx->player_y + 0.5) + 0.01)][(int)ctx->player_x] != '1')
-		ctx->player_y += 0.01;
-	if (ctx->left_input && is_in_bounds(ctx, (ctx->player_x - 0.5) - 0.01, ctx->player_y) && ctx->map[(int)(ctx->player_y)][(int)((ctx->player_x - 0.5) - 0.01)] != '1')
-		ctx->player_x -= 0.01;
-	if (ctx->right_input && is_in_bounds(ctx, (ctx->player_x + 0.5) + 0.01, ctx->player_y) && ctx->map[(int)(ctx->player_y)][(int)((ctx->player_x + 0.5) + 0.01)] != '1')
-		ctx->player_x += 0.01;
+	update_delta(ctx);
+	update_shake(ctx);
+	update_input(ctx);
+	entity_update(ctx, &ctx->player);
 	return (1);
 }
 
 int	loop_hook(t_ctx *ctx)
 {
-	fill_image(ctx, 0x00000000);
+	clear_screen(ctx);
 
 	update(ctx);
-	render_map(ctx);
-	put_square(ctx, (ctx->window_width / 2) - 32, (ctx->window_height / 2) - 32, 64, 0x0000FFAA);
-	mlx_put_image_to_window(ctx->mlx, ctx->mlx_win, ctx->img.data, 0, 0);
+
+	render(ctx);
+	mlx_put_image_to_window(ctx->mlx, ctx->mlx_win, ctx->img.data, ctx->shake.x, ctx->shake.y);
 	return (1);
 }
 

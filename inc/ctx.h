@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 10:12:21 by mbatty            #+#    #+#             */
-/*   Updated: 2025/12/02 23:21:30 by mbatty           ###   ########.fr       */
+/*   Updated: 2026/02/12 14:46:46 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,25 +21,14 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
+#include <sys/time.h>
 
-typedef enum e_sprite_type
-{
-	WALL,
-	FLOOR,
-	COLLECTIBLE,
-	ENEMY,
-	EXIT,
-	PLAYER,
-	UNKNOWN
-}	t_sprite_type;
-
-typedef struct s_sprite
-{
-	char			c;
-	t_sprite_type	type;
-
-	char			**args;
-}	t_sprite;
+#include "key_codes.h"
+#include "sprite.h"
+#include "img.h"
+#include "aabb.h"
+#include "vec2.h"
+#include "entity.h"
 
 typedef struct s_map
 {
@@ -54,16 +43,18 @@ typedef struct s_map
 	int		height;
 }	t_map;
 
-typedef struct s_img
+typedef struct	s_shake
 {
-	void	*data;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-	int		width;
-	int		height;
-}	t_img;
+	bool	active;
+
+	float	duration;
+	
+	float	timer;
+	float	force;
+	float	speed;
+	int		x;
+	int		y;
+}	t_shake;
 
 typedef struct	s_ctx
 {
@@ -77,20 +68,19 @@ typedef struct	s_ctx
 	int			window_width;
 	int			window_height;
 
-	float	player_x;
-	float	player_y;
+	t_entity	player;
+
 	bool	up_input;
 	bool	down_input;
 	bool	left_input;
 	bool	right_input;
+
+	double	delta;
+	double	last_frame;
+	t_shake	shake;
 }	t_ctx;
 
-# define MOUSE_LEFT_CLICK 1
-# define MOUSE_RIGHT_CLICK 3
-# define MOUSE_SCROLL_UP 4
-# define MOUSE_SCROLL_DOWN 5
-
-# define ESC_KEY 65307
+#define TILE_SIZE 64
 
 int	parse_file(t_ctx *ctx);
 int	parse_map(t_ctx *ctx);
@@ -101,5 +91,10 @@ int	loop_hook(t_ctx *ctx);
 int	key_hook(int keycode, t_ctx *ctx);
 int	key_hook_release(int keycode, t_ctx *ctx);
 int	close_window(t_ctx *ctx);
+
+void	ctx_delete(t_ctx *ctx);
+int		ctx_init(t_ctx *ctx, int ac, char **av);
+
+void	update_delta(t_ctx *ctx);
 
 #endif
