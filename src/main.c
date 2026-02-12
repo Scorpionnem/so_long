@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 08:55:37 by mbatty            #+#    #+#             */
-/*   Updated: 2026/02/12 14:48:09 by mbatty           ###   ########.fr       */
+/*   Updated: 2026/02/12 17:30:26 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,7 @@ int	update(t_ctx *ctx)
 
 int	loop_hook(t_ctx *ctx)
 {
+	mlx_clear_window(ctx->mlx, ctx->mlx_win);
 	clear_screen(ctx);
 
 	update(ctx);
