@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 10:12:21 by mbatty            #+#    #+#             */
-/*   Updated: 2026/02/12 14:46:46 by mbatty           ###   ########.fr       */
+/*   Updated: 2026/02/18 12:37:27 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ typedef struct	s_ctx
 }	t_ctx;
 
 #define TILE_SIZE 64
+#define PLAYER_SIZE 48
 
 int	parse_file(t_ctx *ctx);
 int	parse_map(t_ctx *ctx);

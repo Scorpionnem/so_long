@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 08:55:37 by mbatty            #+#    #+#             */
-/*   Updated: 2026/02/12 17:30:26 by mbatty           ###   ########.fr       */
+/*   Updated: 2026/02/18 13:08:57 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,7 @@ void	put_pixel(t_ctx *ctx, int x, int y, int color)
 	if (x < 0 || x >= ctx->img.width || y < 0 || y >= ctx->img.height)
 		return ;
 
-	char	*dst;
-
-	dst = ctx->img.addr + (y * ctx->img.line_length + x * (ctx->img.bits_per_pixel / 8));
-	*(unsigned int *)dst = color;
+	*(unsigned int *)(ctx->img.addr + (y * ctx->img.line_length + x * (ctx->img.bits_per_pixel / 8))) = color;
 }
 
 void	clear_screen(t_ctx *ctx)
@@ -84,8 +81,8 @@ int	render(t_ctx *ctx)
 	int y_max = cam_y + CAMERA_SIZE_Y;
 	float	relative_x;
 	float	relative_y;
-	int		pos_x;
-	int		pos_y;
+	float		pos_x;
+	float		pos_y;
 
 	y = y_min;
 	while (y <= y_max + 1)
@@ -114,8 +111,7 @@ int	render(t_ctx *ctx)
 	pos_x = (int)((relative_x + CAMERA_SIZE_X) * TILE_SIZE);
 	pos_y = (int)((relative_y + CAMERA_SIZE_Y) * TILE_SIZE);
 
-	put_square(ctx, (ctx->window_width / 2) - 24, (ctx->window_height / 2) - 24, 48, 0x0000FFAA);
-	put_square(ctx, pos_x, pos_y, TILE_SIZE, 0x0000FFAA);
+	put_square(ctx, (ctx->window_width / 2) - PLAYER_SIZE / 2, (ctx->window_height / 2) - PLAYER_SIZE / 2, PLAYER_SIZE, 0x0000FFAA);
 	return (1);
 }
 
@@ -187,7 +183,6 @@ int	update(t_ctx *ctx)
 
 int	loop_hook(t_ctx *ctx)
 {
-	mlx_clear_window(ctx->mlx, ctx->mlx_win);
 	clear_screen(ctx);
 
 	update(ctx);
